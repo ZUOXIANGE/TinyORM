@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Description>TinyOrm diagnostics utilities for inspecting generated mappings.</Description>
+    <PackageId>TinyOrm.Diagnostics</PackageId>
+    <Version>0.1.0-alpha</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TinyOrm.Dialects\TinyOrm.Dialects.csproj" />
+  </ItemGroup>
+</Project>

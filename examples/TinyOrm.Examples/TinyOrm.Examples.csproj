@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TinyOrm.Abstractions\TinyOrm.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\TinyOrm.Dialects\TinyOrm.Dialects.csproj" />
+    <ProjectReference Include="..\..\src\TinyOrm.Runtime\TinyOrm.Runtime.csproj" />
+    <ProjectReference Include="..\..\src\TinyOrm.Generators\TinyOrm.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+  </ItemGroup>
+</Project>

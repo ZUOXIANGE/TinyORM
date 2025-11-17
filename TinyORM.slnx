@@ -1,0 +1,26 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/TinyOrm.Benchmarks/TinyOrm.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/examples/">
+    <Project Path="examples/TinyOrm.Examples/TinyOrm.Examples.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/TinyOrm.Abstractions/TinyOrm.Abstractions.csproj" />
+    <Project Path="src/TinyOrm.Diagnostics/TinyOrm.Diagnostics.csproj" />
+    <Project Path="src/TinyOrm.Dialects/TinyOrm.Dialects.csproj" />
+    <Project Path="src/TinyOrm.Generators/TinyOrm.Generators.csproj" />
+    <Project Path="src/TinyOrm.Runtime/TinyOrm.Runtime.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TinyOrm.Tests/TinyOrm.Tests.csproj" />
+  </Folder>
+</Solution>

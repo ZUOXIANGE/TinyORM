@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <Description>TinyOrm runtime: context, query API, execution.</Description>
+    <PackageId>TinyOrm.Runtime</PackageId>
+    <Version>0.1.0-alpha</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TinyOrm.Abstractions\TinyOrm.Abstractions.csproj" />
+    <ProjectReference Include="..\TinyOrm.Dialects\TinyOrm.Dialects.csproj" />
+    <ProjectReference Include="..\TinyOrm.Generators\TinyOrm.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <PackageReference Include="SqlKata" Version="3.2.3" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591</NoWarn>
+    <Description>TinyOrm database dialect adapters.</Description>
+    <PackageId>TinyOrm.Dialects</PackageId>
+    <Version>0.1.0-alpha</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TinyOrm.Abstractions\TinyOrm.Abstractions.csproj" />
+    <PackageReference Include="SqlKata" Version="3.2.3" />
+  </ItemGroup>
+</Project>

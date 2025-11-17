@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <Description>TinyOrm abstractions: attributes, interfaces, and core types.</Description>
+    <PackageId>TinyOrm.Abstractions</PackageId>
+    <Authors>TinyOrm</Authors>
+    <Company>TinyOrm</Company>
+    <RepositoryUrl>https://example.com/TinyOrm</RepositoryUrl>
+    <Version>0.1.0-alpha</Version>
+  </PropertyGroup>
+</Project>
