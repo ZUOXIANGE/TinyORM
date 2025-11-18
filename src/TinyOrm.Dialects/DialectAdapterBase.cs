@@ -4,7 +4,8 @@ using System.Data;
 namespace TinyOrm.Dialects;
 
 /// <summary>
-/// Base implementation for dialect adapters.
+/// 方言适配器的基类，提供通用的类型映射与标识符处理。
+/// 派生类可覆盖以适配特定数据库。
 /// </summary>
 public abstract class DialectAdapterBase : IDialectAdapter
 {
@@ -15,6 +16,7 @@ public abstract class DialectAdapterBase : IDialectAdapter
     public abstract string Name { get; }
 
     /// <inheritdoc />
+    /// <summary>默认的 CLR 到 DbType 映射。</summary>
     public virtual DbType MapClrType(Type type)
     {
         if (type == typeof(string)) return DbType.String;
@@ -33,12 +35,16 @@ public abstract class DialectAdapterBase : IDialectAdapter
         return DbType.Object;
     }
 
+    /// <summary>引用标识符（默认使用双引号）。</summary>
     public virtual string QuoteIdentifier(string name) => "\"" + name + "\"";
 
+    /// <summary>引用表名（默认 schema.table）。</summary>
     public virtual string QuoteTable(string table, string? schema = null)
         => string.IsNullOrEmpty(schema) ? QuoteIdentifier(table) : QuoteIdentifier(schema) + "." + QuoteIdentifier(table);
 
+    /// <summary>参数占位符前缀（默认 @）。</summary>
     public virtual string Parameter(string name) => "@" + name;
 
+    /// <summary>是否支持多值插入（默认支持）。</summary>
     public virtual bool SupportsMultiValuesInsert => true;
 }

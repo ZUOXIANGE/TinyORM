@@ -3,7 +3,7 @@ using SqlKata.Compilers;
 namespace TinyOrm.Dialects.Adapters;
 
 /// <summary>
-/// SQL Server dialect adapter.
+/// SQL Server 方言适配器。
 /// </summary>
 public sealed class SqlServerDialectAdapter : DialectAdapterBase
 {

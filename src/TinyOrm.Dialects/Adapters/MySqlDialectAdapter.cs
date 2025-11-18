@@ -3,7 +3,7 @@ using SqlKata.Compilers;
 namespace TinyOrm.Dialects.Adapters;
 
 /// <summary>
-/// MySQL dialect adapter.
+/// MySQL 方言适配器。
 /// </summary>
 public sealed class MySqlDialectAdapter : DialectAdapterBase
 {

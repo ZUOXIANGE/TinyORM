@@ -3,7 +3,7 @@ using SqlKata.Compilers;
 namespace TinyOrm.Dialects.Adapters;
 
 /// <summary>
-/// PostgreSQL dialect adapter.
+/// PostgreSQL 方言适配器。
 /// </summary>
 public sealed class PostgresDialectAdapter : DialectAdapterBase
 {

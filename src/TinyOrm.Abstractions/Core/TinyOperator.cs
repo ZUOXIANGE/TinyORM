@@ -1,7 +1,7 @@
 namespace TinyOrm.Abstractions.Core;
 
 /// <summary>
-/// Supported filter operators for strongly typed queries.
+/// 强类型查询支持的比较/集合/匹配运算符。
 /// </summary>
 public enum TinyOperator
 {

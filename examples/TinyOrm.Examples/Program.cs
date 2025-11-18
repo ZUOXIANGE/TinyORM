@@ -68,7 +68,7 @@ public static class Program
     private static void UpdateFirstPersonAndPrintRows(TinyOrmContext ctx, int firstId)
     {
         var first = ctx.Query<Person>().Where(a => a.Id == firstId).ToList().First();
-        var updated = ctx.Update(new Person{ Id=firstId, FirstName=first.FirstName, LastName=first.LastName, Age=31, ProvinceId=first.ProvinceId });
+        var updated = ctx.UpdateFields(new Person{ Id=firstId, Age=31 }, a => a.Age);
         var rows = ctx.Query<Person>().Select("id","first_name","age").ToRows();
         foreach (var r in rows) System.Console.WriteLine($"row id={r["id"]} age={r["age"]}");
     }

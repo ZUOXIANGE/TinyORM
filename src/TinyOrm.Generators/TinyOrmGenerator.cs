@@ -9,6 +9,11 @@ namespace TinyOrm.Generators;
 [Generator]
 public sealed class TinyOrmGenerator : IIncrementalGenerator
 {
+    /// <summary>
+    /// TinyOrm 的 Source Generator，扫描实体类型并生成映射代码（表/列元数据、
+    /// 插入/更新/删除 SQL 以及参数绑定、Materializer 等）。
+    /// </summary>
+    /// <summary>初始化增量生成器。</summary>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var candidates = context.SyntaxProvider
@@ -20,11 +25,14 @@ public sealed class TinyOrmGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(compilationAndCandidates, static (spc, source) => Execute(spc, source.Left, source.Right!));
     }
 
+    /// <summary>判断语法节点是否为候选实体类型。</summary>
     private static bool IsCandidate(SyntaxNode node)
         => node is ClassDeclarationSyntax cds && cds.AttributeLists.Count > 0;
 
+    /// <summary>候选实体记录，包含表与模式名。</summary>
     private sealed record Candidate(ClassDeclarationSyntax ClassDecl, string? Table, string? Schema);
 
+    /// <summary>提取候选实体及其表/模式配置。</summary>
     private static Candidate? GetCandidate(GeneratorSyntaxContext ctx)
     {
         var cds = (ClassDeclarationSyntax)ctx.Node;
@@ -64,6 +72,7 @@ public sealed class TinyOrmGenerator : IIncrementalGenerator
         return null;
     }
 
+    /// <summary>生成映射代码并注册到运行时映射表。</summary>
     private static void Execute(SourceProductionContext spc, Compilation compilation, ImmutableArray<Candidate> candidates)
     {
         var registrations = new StringBuilder();
@@ -359,6 +368,7 @@ public sealed class TinyOrmGenerator : IIncrementalGenerator
         spc.AddSource("TinyOrm.Generated.ModuleInit.g.cs", registrations.ToString());
     }
 
+    /// <summary>获取属性映射的列名（来自 ColumnAttribute）。</summary>
     private static string? GetColumnName(IPropertySymbol p)
     {
         foreach (var a in p.GetAttributes())
@@ -383,9 +393,11 @@ public sealed class TinyOrmGenerator : IIncrementalGenerator
         return null;
     }
 
+    /// <summary>判断属性是否包含指定完整名的特性。</summary>
     private static bool HasAttribute(IPropertySymbol p, string fullName)
         => p.GetAttributes().Any(a => a.AttributeClass?.ToDisplayString() == fullName);
 
+    /// <summary>获取数据库生成选项（Identity/Computed）。</summary>
     private static int GetDatabaseGeneratedOption(IPropertySymbol p)
     {
         foreach (var a in p.GetAttributes())
@@ -402,6 +414,7 @@ public sealed class TinyOrmGenerator : IIncrementalGenerator
         return 0;
     }
 
+    /// <summary>枚举是否以字符串形式存储。</summary>
     private static bool IsEnumStoredAsString(IPropertySymbol p)
     {
         foreach (var a in p.GetAttributes())
@@ -418,6 +431,7 @@ public sealed class TinyOrmGenerator : IIncrementalGenerator
         return false;
     }
 
+    /// <summary>生成从数据读取器读取指定列并赋值到属性的代码。</summary>
     private static string GetReadExpression(IPropertySymbol p, string col)
     {
         var typeName = p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Replace("global::", string.Empty);
@@ -458,6 +472,7 @@ public sealed class TinyOrmGenerator : IIncrementalGenerator
         return sb.ToString();
     }
 
+    /// <summary>根据类型生成读取器调用表达式。</summary>
     private static string GetReaderCall(ITypeSymbol type)
     {
         return type.SpecialType switch
@@ -476,6 +491,7 @@ public sealed class TinyOrmGenerator : IIncrementalGenerator
         };
     }
 
+    /// <summary>根据枚举底层类型生成读取表达式。</summary>
     private static string GetEnumUnderlyingReadCall(ITypeSymbol type)
     {
         return type.SpecialType switch

@@ -3,7 +3,7 @@ using SqlKata.Compilers;
 namespace TinyOrm.Dialects.Adapters;
 
 /// <summary>
-/// SQLite dialect adapter.
+/// SQLite 方言适配器。
 /// </summary>
 public sealed class SqliteDialectAdapter : DialectAdapterBase
 {

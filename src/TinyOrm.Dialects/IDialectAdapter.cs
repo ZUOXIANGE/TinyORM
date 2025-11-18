@@ -4,27 +4,29 @@ using System.Data;
 namespace TinyOrm.Dialects;
 
 /// <summary>
-/// Provides database-specific compiler and type mapping services.
+/// 提供数据库方言相关的编译器与类型映射服务。
+/// 用于生成不同数据库的 SQL 以及参数/标识符处理。
 /// </summary>
 public interface IDialectAdapter
 {
-    /// <summary>Returns the SQL compiler for the target database.</summary>
+    /// <summary>获取目标数据库的 SqlKata 编译器。</summary>
     Compiler Compiler { get; }
 
-    /// <summary>Returns the dialect name.</summary>
+    /// <summary>获取方言名称。</summary>
     string Name { get; }
 
-    /// <summary>Maps a CLR type to a database parameter type.</summary>
+    /// <summary>将 CLR 类型映射到数据库参数类型。</summary>
     DbType MapClrType(Type type);
 
-    /// <summary>Quotes an identifier (column or table) according to dialect.</summary>
+    /// <summary>按方言规则引用标识符（列或表）。</summary>
     string QuoteIdentifier(string name);
 
-    /// <summary>Quotes a table name with optional schema.</summary>
+    /// <summary>按方言规则引用表名，可包含模式名。</summary>
     string QuoteTable(string table, string? schema = null);
 
-    /// <summary>Returns a parameter placeholder for the given name.</summary>
+    /// <summary>返回参数占位符（带方言前缀）。</summary>
     string Parameter(string name);
 
+    /// <summary>是否支持多值插入（批量 VALUES）。</summary>
     bool SupportsMultiValuesInsert { get; }
 }

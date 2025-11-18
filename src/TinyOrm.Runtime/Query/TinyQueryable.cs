@@ -6,7 +6,8 @@ using TinyOrm.Runtime.Context;
 namespace TinyOrm.Runtime.Query;
 
 /// <summary>
-/// Strongly typed query builder for an entity, backed by SqlKata.
+/// 面向实体的强类型查询构建器，内部基于 SqlKata。
+/// 支持表达式与字段引用的混合查询、分组、聚合与联接。
 /// </summary>
 public sealed class TinyQueryable<TEntity> where TEntity : class, new()
 {
@@ -16,7 +17,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
     private readonly string _table;
 
     /// <summary>
-    /// Creates a new queryable instance.
+    /// 创建查询实例。
     /// </summary>
     public TinyQueryable(TinyOrmContext ctx, KataQuery query, ITinyRowMaterializer<TEntity> materializer, string table)
     {
@@ -26,7 +27,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         _table = table;
     }
 
-    /// <summary>Adds a filter predicate using a typed field.</summary>
+    /// <summary>使用强类型字段添加过滤条件。</summary>
     public TinyQueryable<TEntity> Where<TProperty>(Field<TEntity, TProperty> field, TinyOperator op, TProperty value)
     {
         switch (op)
@@ -59,67 +60,74 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return this;
     }
 
-    /// <summary>Orders by a typed field ascending.</summary>
+    /// <summary>按强类型字段升序排序。</summary>
     public TinyQueryable<TEntity> OrderBy<TProperty>(Field<TEntity, TProperty> field)
     {
         _query.OrderBy(field.ColumnName);
         return this;
     }
 
-    /// <summary>Orders by a typed field descending.</summary>
+    /// <summary>按强类型字段降序排序。</summary>
     public TinyQueryable<TEntity> OrderByDesc<TProperty>(Field<TEntity, TProperty> field)
     {
         _query.OrderByDesc(field.ColumnName);
         return this;
     }
 
+    /// <summary>使用表达式添加过滤条件。</summary>
     public TinyQueryable<TEntity> Where(Expression<Func<TEntity, bool>> predicate)
     {
         ApplyPredicate(predicate.Body, false);
         return this;
     }
 
-    public TinyQueryable<TEntity> OrderBy(Expression<Func<TEntity, object>> keySelector)
+    /// <summary>按表达式选择的字段升序排序。</summary>
+    public TinyQueryable<TEntity> OrderBy(Expression<Func<TEntity, object?>> keySelector)
     {
         var col = GetColumnFromSelector(keySelector.Body);
         _query.OrderBy(col);
         return this;
     }
 
-    public TinyQueryable<TEntity> OrderByDesc(Expression<Func<TEntity, object>> keySelector)
+    /// <summary>按表达式选择的字段降序排序。</summary>
+    public TinyQueryable<TEntity> OrderByDesc(Expression<Func<TEntity, object?>> keySelector)
     {
         var col = GetColumnFromSelector(keySelector.Body);
         _query.OrderByDesc(col);
         return this;
     }
 
+    /// <summary>继续按强类型字段升序排序。</summary>
     public TinyQueryable<TEntity> ThenBy<TProperty>(Field<TEntity, TProperty> field)
     {
         _query.OrderBy(field.ColumnName);
         return this;
     }
 
+    /// <summary>继续按强类型字段降序排序。</summary>
     public TinyQueryable<TEntity> ThenByDesc<TProperty>(Field<TEntity, TProperty> field)
     {
         _query.OrderByDesc(field.ColumnName);
         return this;
     }
 
-    public TinyQueryable<TEntity> ThenBy(Expression<Func<TEntity, object>> keySelector)
+    /// <summary>继续按表达式字段升序排序。</summary>
+    public TinyQueryable<TEntity> ThenBy(Expression<Func<TEntity, object?>> keySelector)
     {
         var col = GetColumnFromSelector(keySelector.Body);
         _query.OrderBy(col);
         return this;
     }
 
-    public TinyQueryable<TEntity> ThenByDesc(Expression<Func<TEntity, object>> keySelector)
+    /// <summary>继续按表达式字段降序排序。</summary>
+    public TinyQueryable<TEntity> ThenByDesc(Expression<Func<TEntity, object?>> keySelector)
     {
         var col = GetColumnFromSelector(keySelector.Body);
         _query.OrderByDesc(col);
         return this;
     }
 
-    /// <summary>Limits the number of returned rows.</summary>
+    /// <summary>限制返回的行数。</summary>
     public TinyQueryable<TEntity> Limit(int count)
     {
         _query.Limit(count);
@@ -128,7 +136,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
 
     public TinyQueryable<TEntity> Take(int count) => Limit(count);
 
-    /// <summary>Offsets the returned rows.</summary>
+    /// <summary>跳过指定数量的行。</summary>
     public TinyQueryable<TEntity> Offset(int count)
     {
         _query.Offset(count);
@@ -137,26 +145,30 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
 
     public TinyQueryable<TEntity> Skip(int count) => Offset(count);
 
+    /// <summary>选择返回的列名（原始列/别名）。</summary>
     public TinyQueryable<TEntity> Select(params string[] columnNames)
     {
         _query.Select(columnNames);
         return this;
     }
 
+    /// <summary>按强类型字段分组。</summary>
     public TinyQueryable<TEntity> GroupBy<TProperty>(Field<TEntity, TProperty> field)
     {
         _query.GroupBy(field.ColumnName);
         return this;
     }
 
-    public TinyQueryable<TEntity> GroupBy(Expression<Func<TEntity, object>> keySelector)
+    /// <summary>按表达式选择的字段分组。</summary>
+    public TinyQueryable<TEntity> GroupBy(Expression<Func<TEntity, object?>> keySelector)
     {
         var col = GetColumnFromSelector(keySelector.Body);
         _query.GroupBy(col);
         return this;
     }
 
-    public TinyQueryable<TEntity> GroupBy(params Expression<Func<TEntity, object>>[] keySelectors)
+    /// <summary>按多个表达式字段分组。</summary>
+    public TinyQueryable<TEntity> GroupBy(params Expression<Func<TEntity, object?>>[] keySelectors)
     {
         foreach (var ks in keySelectors)
         {
@@ -166,7 +178,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return this;
     }
 
-    /// <summary>Executes the query and returns entities.</summary>
+    /// <summary>执行查询并返回实体列表。</summary>
     public IEnumerable<TEntity> ToList()
     {
         var result = _ctx.Dialect.Compiler.Compile(_query);
@@ -193,6 +205,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return list;
     }
 
+    /// <summary>按强类型字段进行内联接。</summary>
     public TinyQueryable<TEntity> Join<TOther, TKey>(Field<TEntity, TKey> selfKey, TinyOrm.Abstractions.Core.Field<TOther, TKey> otherKey, string? alias = null)
         where TOther : class, new()
     {
@@ -205,6 +218,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return this;
     }
 
+    /// <summary>按表达式进行内联接。</summary>
     public TinyQueryable<TEntity> InnerJoin<TOther>(Expression<Func<TEntity, TOther, bool>> on, string? alias = null)
         where TOther : class, new()
     {
@@ -214,6 +228,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return this;
     }
 
+    /// <summary>按表达式进行左联接。</summary>
     public TinyQueryable<TEntity> LeftJoin<TOther>(Expression<Func<TEntity, TOther, bool>> on, string? alias = null)
         where TOther : class, new()
     {
@@ -223,6 +238,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return this;
     }
 
+    /// <summary>按表达式进行右联接。</summary>
     public TinyQueryable<TEntity> RightJoin<TOther>(Expression<Func<TEntity, TOther, bool>> on, string? alias = null)
         where TOther : class, new()
     {
@@ -232,6 +248,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return this;
     }
 
+    /// <summary>按强类型字段进行左联接。</summary>
     public TinyQueryable<TEntity> LeftJoin<TOther, TKey>(Field<TEntity, TKey> selfKey, TinyOrm.Abstractions.Core.Field<TOther, TKey> otherKey, string? alias = null)
         where TOther : class, new()
     {
@@ -244,6 +261,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return this;
     }
 
+    /// <summary>按强类型字段进行右联接。</summary>
     public TinyQueryable<TEntity> RightJoin<TOther, TKey>(Field<TEntity, TKey> selfKey, TinyOrm.Abstractions.Core.Field<TOther, TKey> otherKey, string? alias = null)
         where TOther : class, new()
     {
@@ -256,10 +274,12 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return this;
     }
 
+    /// <summary>语义化的内联接别名，用于包含关系。</summary>
     public TinyQueryable<TEntity> Include<TOther, TKey>(Field<TEntity, TKey> selfKey, TinyOrm.Abstractions.Core.Field<TOther, TKey> otherKey, string? alias = null)
         where TOther : class, new()
         => Join(selfKey, otherKey, alias);
 
+    /// <summary>执行查询并返回行字典集合（适合自定义视图/聚合）。</summary>
     public IEnumerable<TinyRow> ToRows()
     {
         var result = _ctx.Dialect.Compiler.Compile(_query);
@@ -325,6 +345,7 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         }
     }
 
+    /// <summary>按表达式选择 DTO 字段并返回 DTO 查询。</summary>
     public TinyQueryable<TDto> SelectDto<TDto>(Expression<Func<TEntity, TDto>> projection)
         where TDto : class, new()
     {
@@ -354,12 +375,14 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return new TinyOrm.Runtime.Query.TinyQueryable<TDto>(_ctx, _query, mat, _table);
     }
 
+    /// <summary>添加 Having 条件（用于聚合后的过滤）。</summary>
     public TinyQueryable<TEntity> Having(Expression<Func<TEntity, bool>> predicate)
     {
         ApplyHavingPredicate(predicate.Body);
         return this;
     }
 
+    /// <summary>返回匹配条件的行数。</summary>
     public long Count()
     {
         var q = _query.Clone();
@@ -383,26 +406,30 @@ public sealed class TinyQueryable<TEntity> where TEntity : class, new()
         return obj is long l ? l : Convert.ToInt64(obj ?? 0);
     }
 
-    public T? Max<T>(Expression<Func<TEntity, object>> keySelector)
+    /// <summary>返回指定字段的最大值。</summary>
+    public T? Max<T>(Expression<Func<TEntity, object?>> keySelector)
     {
         var col = GetColumnFromSelector(keySelector.Body);
         return Scalar<T>("MAX(" + col + ")");
     }
 
-    public T? Min<T>(Expression<Func<TEntity, object>> keySelector)
+    /// <summary>返回指定字段的最小值。</summary>
+    public T? Min<T>(Expression<Func<TEntity, object?>> keySelector)
     {
         var col = GetColumnFromSelector(keySelector.Body);
         return Scalar<T>("MIN(" + col + ")");
     }
 
-    public decimal Sum(Expression<Func<TEntity, object>> keySelector)
+    /// <summary>返回指定字段的总和。</summary>
+    public decimal Sum(Expression<Func<TEntity, object?>> keySelector)
     {
         var col = GetColumnFromSelector(keySelector.Body);
         var v = Scalar<object>("SUM(" + col + ")");
         return v is null ? 0m : Convert.ToDecimal(v);
     }
 
-    public double Avg(Expression<Func<TEntity, object>> keySelector)
+    /// <summary>返回指定字段的平均值。</summary>
+    public double Avg(Expression<Func<TEntity, object?>> keySelector)
     {
         var col = GetColumnFromSelector(keySelector.Body);
         var v = Scalar<object>("AVG(" + col + ")");
